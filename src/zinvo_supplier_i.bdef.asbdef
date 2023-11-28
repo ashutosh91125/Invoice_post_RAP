@@ -1,0 +1,147 @@
+managed implementation in class zbp_invo_supplier_i unique;
+
+
+define behavior for zinvo_supplier_i alias Supplier
+persistent table zsupplier_invo
+lock master
+authorization master ( instance )
+etag master CreatedAt
+{
+  create;
+  update;
+  delete;
+  action transferData  result [1] $self;
+  action validateData result [1] $self;
+  determination determineData on save {field CreatedBy, CreatedAt;}
+  association _Item { create; }
+  association _Comments { create; }
+
+  mapping for zsupplier_invo {
+   supplierinvoice            = Supplierinvoice;
+  fiscalyear                 = Fiscalyear;
+  companycode                    = Companycode ;
+  documentdate                   = Documentdate;
+  postingdate                    = Postingdate;
+  supplierinvoiceidbyinvcgparty  = Supplierinvoiceidbyinvcgparty;
+  invoicingparty                 = Invoicingparty;
+  documentcurrency               = Documentcurrency;
+  invoicegrossamount             = Invoicegrossamount;
+  unplanneddeliverycost          = Unplanneddeliverycost;
+  documentheadertext             = Documentheadertext;
+  manualcashdiscount             = Manualcashdiscount;
+  paymentterms                   = Paymentterms;
+  duecalculationbasedate         = Duecalculationbasedate;
+  cashdiscount1percent           = Cashdiscount1percent;
+  cashdiscount1days              = Cashdiscount1days;
+  cashdiscount2percent           = Cashdiscount2percent;
+  cashdiscount2days              = Cashdiscount2days;
+  netpaymentdays                 = Netpaymentdays;
+  paymentblockingreason          = Paymentblockingreason;
+  accountingdocumenttype         = Accountingdocumenttype;
+  bpbankaccountinternalid        = Bpbankaccountinternalid;
+  indirectquotedexchangerate     = Indirectquotedexchangerate;
+  directquotedexchangerate       = Directquotedexchangerate;
+  statecentralbankpaymentreason  = Statecentralbankpaymentreason;
+  supplyingcountry               = Supplyingcountry;
+  paymentmethod                  = Paymentmethod;
+  paymentmethodsupplement        = Paymentmethodsupplement;
+  paymentreference               = Paymentreference;
+  invoicereference               = Invoicereference;
+  invoicereferencefiscalyear     = Invoicereferencefiscalyear;
+  fixedcashdiscount              = Fixedcashdiscount;
+  unplanneddeliverycosttaxcode   = Unplanneddeliverycosttaxcode;
+  unplnddelivcosttaxjurisdiction = Unplnddelivcosttaxjurisdiction;
+  assignmentreference            = Assignmentreference;
+  supplierpostinglineitemtext    = Supplierpostinglineitemtext;
+  taxiscalculatedautomatically   = Taxiscalculatedautomatically;
+  businessplace                  = Businessplace;
+  businesssectioncode            = Businesssectioncode;
+  businessarea                   = Businessarea;
+  supplierinvoiceiscreditmemo    = Supplierinvoiceiscreditmemo;
+  paytslipwthrefsubscriber       = Paytslipwthrefsubscriber;
+  paytslipwthrefcheckdigit       = Paytslipwthrefcheckdigit;
+  paytslipwthrefreference        = Paytslipwthrefreference;
+  taxdeterminationdate           = Taxdeterminationdate;
+  invoicereceiptdate             = Invoicereceiptdate;
+  deliveryofgoodsreportingcntry  = Deliveryofgoodsreportingcntry;
+  suppliervatregistration        = Suppliervatregistration;
+  iseutriangulardeal             = Iseutriangulardeal;
+  status                         = Status;
+  }
+}
+
+define behavior for zinvo_item_i alias Order_Item
+persistent table zinvo_item
+lock dependent by _Supplier
+authorization dependent by _Supplier
+//etag master <field_name>
+{
+  update;
+  delete;
+  association _Item_Ass { create; }
+  field ( readonly ) Supplierinvoice, Fiscalyear;
+  association _Supplier;
+
+
+  mapping for zinvo_item {
+
+  supplierinvoiceitem        = Supplierinvoiceitem;
+  supplierinvoice            = Supplierinvoice;
+  fiscalyear                 = Fiscalyear;
+  purchaseorder                  = Purchaseorder;
+  purchaseorderitem              = Purchaseorderitem;
+  plant                          = plant;
+  referencedocument              = Referencedocument;
+  referencedocumentfiscalyear    = Referencedocumentfiscalyear;
+  referencedocumentitem          = Referencedocumentitem;
+  issubsequentdebitcredit        = Issubsequentdebitcredit;
+  taxcode                        = Taxcode;
+  taxjurisdiction                = Taxjurisdiction;
+  documentcurrency               = Documentcurrency;
+  supplierinvoiceitemamount      = Supplierinvoiceitemamount;
+  purchaseorderquantityunit      = Purchaseorderquantityunit;
+  quantityinpurchaseorderunit    = Quantityinpurchaseorderunit;
+  purchaseorderpriceunit         = Purchaseorderpriceunit;
+  qtyinpurchaseorderpriceunit    = Qtyinpurchaseorderpriceunit;
+  suplrinvcdeliverycostcndntype  = Suplrinvcdeliverycostcndntype;
+  suplrinvcdeliverycostcndnstep  = Suplrinvcdeliverycostcndnstep;
+  suplrinvcdeliverycostcndncount = Suplrinvcdeliverycostcndncount;
+  supplierinvoiceitemtext        = Supplierinvoiceitemtext;
+  freightsupplier                = Freightsupplier;
+  isnotcashdiscountliable        = Isnotcashdiscountliable;
+
+  }
+}
+
+define behavior for zinvo_itm_ass_i alias Account_Assignment
+
+persistent table zinvoice_itm_ass
+lock dependent by _Supplier
+//etag master <field_name>
+
+{
+  update;
+  delete;
+  field ( readonly ) Fiscalyear,SUPPLIERINVOICEITEM, Supplierinvoice;
+  association _Item;
+  association _Supplier;
+}
+
+define behavior for zinvo_comment_i alias Comments
+persistent table zinvo_comment
+lock dependent by _Supplier
+authorization dependent by _Supplier
+//etag master <field_name>
+{
+  update;
+  delete;
+  field ( readonly ) Fiscalyear, Supplierinvoice;
+  association _Supplier;
+
+  mapping for zinvo_comment{
+        MessageNo = message_no;
+   supplierinvoice = Supplierinvoice;
+   fiscalyear      = Fiscalyear;
+  comments = Comments;
+  }
+}

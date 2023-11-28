@@ -1,0 +1,7 @@
+@EndUserText.label: 'service for invoice post'
+define service Zinvoice_post_s {
+  expose zinvo_item_c;
+  expose zinvo_itm_ass_c;
+  expose zinvo_supplier_c;
+  expose ZINVO_COMMENT_C;
+}

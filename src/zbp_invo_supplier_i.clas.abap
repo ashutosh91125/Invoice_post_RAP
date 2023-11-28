@@ -1,0 +1,5 @@
+CLASS zbp_invo_supplier_i DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zinvo_supplier_i.
+ENDCLASS.
+
+CLASS zbp_invo_supplier_i IMPLEMENTATION.
+ENDCLASS.
